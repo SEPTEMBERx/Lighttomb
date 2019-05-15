@@ -5,12 +5,13 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 /**
  * @Author: Septemberx
- * @Date: 2019/5/15 15:34
+ * @Date: 2019/5/15 23:04
  */
 @Controller
-public class IndexController {
-    @GetMapping("/")
-    public String index(){
-        return "index";
+public class errorController {
+
+    @GetMapping("/error")
+    public String error(){
+        return "error";
     }
 }
