@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
@@ -29,9 +30,7 @@ public class OauthController {
     private String RedirectUri;
 
     @GetMapping("/callback")
-    public String callback(@RequestParam(name="code")String code,
-                           @RequestParam(name="state")String state){
-
+    public String callback(@RequestParam(name = "code") String code, @RequestParam(name = "state") String state, HttpServletRequest request) {
 
 
         AccessTokenDTO accessTokenDTO = new AccessTokenDTO();
@@ -41,13 +40,24 @@ public class OauthController {
         accessTokenDTO.setState(state);
         accessTokenDTO.setRedirect_uri(RedirectUri);
         String accessToken = githubSupport.getAccessToken(accessTokenDTO);
+
+        GithubUserDTO user = null;
         try {
-            GithubUserDTO user =githubSupport.getUser(accessToken);
-            System.out.println(user.getName());
+            user = githubSupport.getUser(accessToken);
+            if (user != null) {
+                request.getSession().setAttribute("user", user);
+//                登陆成功 写cookie 和 session
+
+            } else {
+
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "index";
 
+        return "redirect:http://localhost:8084/";
+//                重定向到首页
     }
 }
+
