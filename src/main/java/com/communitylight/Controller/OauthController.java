@@ -2,7 +2,10 @@ package com.communitylight.Controller;
 
 import com.communitylight.DTO.AccessTokenDTO;
 import com.communitylight.DTO.GithubUserDTO;
+import com.communitylight.Mapper.UserMapper;
+import com.communitylight.Model.User;
 import com.communitylight.support.GithubSupport;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -11,16 +14,21 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.UUID;
 
 /**
  * @Author: Septemberx
  * @Date: 2019/5/15 16:36
  */
 @Controller
+@MapperScan(basePackages = {"com.communitylight.Mapper"})
 public class OauthController {
 
     @Autowired
     private GithubSupport githubSupport;
+
+    @Autowired
+    private UserMapper userMapper;
 
     @Value("${Github.Client_id}")
     private String ClientID;
@@ -41,13 +49,24 @@ public class OauthController {
         accessTokenDTO.setRedirect_uri(RedirectUri);
         String accessToken = githubSupport.getAccessToken(accessTokenDTO);
 
-        GithubUserDTO user = null;
-        try {
-            user = githubSupport.getUser(accessToken);
-            if (user != null) {
-                request.getSession().setAttribute("user", user);
-//                登陆成功 写cookie 和 session
+        GithubUserDTO githubUserDTO = null;
 
+        try {
+            githubUserDTO = githubSupport.getUser(accessToken);
+            if (githubUserDTO != null) {
+
+                User user = new User();
+
+                user.setAccountId(String.valueOf(githubUserDTO.getId()));
+                user.setUserName(githubUserDTO.getName());
+                user.setGmtCreatetime(System.currentTimeMillis());
+                user.setGmtModified(user.getGmtCreatetime());
+                user.setCookie(UUID.randomUUID().toString());
+
+                userMapper.insert(user);
+
+                request.getSession().setAttribute("user", githubUserDTO);
+//                登陆成功 写cookie 和 session
             } else {
 
             }
