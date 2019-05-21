@@ -4,11 +4,13 @@ import com.communitylight.Model.User;
 import com.communitylight.Model.UserExample;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
-
+@Mapper
+@Component
 public interface UserMapper {
-
 
 
     long countByExample(UserExample example);
@@ -16,6 +18,7 @@ public interface UserMapper {
     int deleteByExample(UserExample example);
 
     int deleteByPrimaryKey(Integer id);
+
 
     int insert(User record);
 
@@ -32,4 +35,12 @@ public interface UserMapper {
     int updateByPrimaryKeySelective(User record);
 
     int updateByPrimaryKey(User record);
+
+    @Select("SELECT * FROM User where cookie = #{cookie}")
+    User findByToken(@Param("cookie") String token);
+
+    @Select("select * from user where id = #{id}")
+    User findById(@Param("id") Integer id);
+
+
 }

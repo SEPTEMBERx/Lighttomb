@@ -77,6 +77,7 @@
     <sql id="Base_Column_List">
     ID, USER_NAME, ACCOUNT_ID, COOKIE, GMT_CREATETIME, GMT_MODIFIED
   </sql>
+
     <select id="selectByExample" parameterType="com.communitylight.Model.UserExample" resultMap="BaseResultMap">
         select
         <if test="distinct">
@@ -160,12 +161,14 @@
             </if>
         </trim>
     </insert>
+
     <select id="countByExample" parameterType="com.communitylight.Model.UserExample" resultType="java.lang.Long">
         select count(*) from USER
         <if test="_parameter != null">
             <include refid="Example_Where_Clause"/>
         </if>
     </select>
+
     <update id="updateByExampleSelective" parameterType="map">
         update USER
         <set>
@@ -225,6 +228,7 @@
         </set>
         where ID = #{id,jdbcType=INTEGER}
     </update>
+
     <update id="updateByPrimaryKey" parameterType="com.communitylight.Model.User">
     update USER
     set USER_NAME = #{userName,jdbcType=VARCHAR},

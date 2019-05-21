@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class errorController {
 
     @GetMapping("/error")
-    public String error(){
+    public String error( ) {
         return "error";
     }
 }

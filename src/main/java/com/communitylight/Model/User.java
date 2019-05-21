@@ -1,5 +1,8 @@
 package com.communitylight.Model;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class User {
     private Integer id;
 

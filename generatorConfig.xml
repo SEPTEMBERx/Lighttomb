@@ -4,6 +4,7 @@
         "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
 
 <generatorConfiguration>
+    <properties resource="application.properties" />
     <context id="testTables" targetRuntime="MyBatis3">
         <commentGenerator>
             <!-- 是否去除自动生成的注释 true：是 ： false:否 -->
@@ -12,10 +13,10 @@
 
         <!--数据库连接的信息：驱动类、连接地址、用户名、密码 -->
         <jdbcConnection
-                driverClass="org.h2.Driver"
-                connectionURL="jdbc:h2:~/community"
-                userId="september"
-                password="Zz129129">
+                driverClass="${spring.datasource.driver-class-name}"
+                connectionURL="${spring.datasource.url}"
+                userId="${spring.datasource.username}"
+                password="${spring.datasource.password}">
         </jdbcConnection>
 
         <!--        <jdbcConnection -->
@@ -31,7 +32,8 @@
         </javaTypeResolver>
 
         <!-- targetProject:生成Model类的位置 -->
-        <javaModelGenerator targetPackage="com.communitylight.Model" targetProject=".\src\main\java">
+        <javaModelGenerator targetPackage="${Model.targetPackage}"
+                            targetProject="${Model.targetProject}">
             <!-- enableSubPackages:是否让schema作为包的后缀 -->
             <property name="enableSubPackages" value="false" />
             <!-- 从数据库返回的值被清理前后的空格 -->
@@ -39,19 +41,34 @@
         </javaModelGenerator>
 
         <!-- targetProject:mapper映射文件生成的位置 -->
-        <sqlMapGenerator targetPackage="com.communitylight.Mapper"  targetProject=".\src\main\java">
+        <sqlMapGenerator targetPackage="${Mapper.targetPackage}"
+                         targetProject="${Mapper.targetProject}">
             <!-- enableSubPackages:是否让schema作为包的后缀 -->
             <property name="enableSubPackages" value="false" />
         </sqlMapGenerator>
 
         <!-- targetPackage：mapper接口生成的位置 -->
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.communitylight.Mapper"  targetProject=".\src\main\java">
+        <javaClientGenerator type="XMLMAPPER"
+                             targetPackage="${MapperXML.targetPackage}"
+                             targetProject="${MapperXML.targetProject}">
             <!-- enableSubPackages:是否让schema作为包的后缀 -->
+
             <property name="enableSubPackages" value="false" />
         </javaClientGenerator>
-
         <!-- 指定数据库表 ,生成对应表及类名,可以生成多个,复制下面这行代码改名-->
-        <table domainObjectName="User" tableName="user" ></table>
+        <table domainObjectName="User"
+               tableName="user" >
+        </table>
 
     </context>
 </generatorConfiguration>
+
+<!--=====================================================================================-->
+        <!--Example类实现了查询条件的对象化。-->
+        <!--"_"分隔的字段名会自动转化为驼峰形式。-->
+        <!--oracle nvarchar/nvarchar2类型会转化成Object类型。-->
+        <!--oracle指定精度的数值型字段默认转为BigDecimal，不指定精度的数值型默认转为Long。-->
+        <!--targetProject属性可以设置为MAVEN，代码将生成在target/generatored-source目录下。-->
+        <!--generatorConfiguration节点下添加 <properties resource="jdbc.properties" />，-->
+        <!--可以在配置中的${...}表示的占位符。获取文件的方式为：-->
+        <!--Thread.currentThread().getContextClassLoader().getResource(resource)-->
